@@ -28,3 +28,8 @@ def stats() -> str:
 @app_views.route('/api/v1/unauthorized', methods=['GET'])
 def unauthorized_endpoint():
     abort(401)
+
+
+@app_views.route('/api/v1/forbidden', methods=['GET'])
+def forbidden_endpoint():
+    abort(403)  
