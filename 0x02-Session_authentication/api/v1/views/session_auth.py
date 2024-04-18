@@ -4,11 +4,12 @@
 from flask import abort, jsonify, request
 from api.v1.views import app_views
 from models.user import User
-from api.v1.app import auth
+
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def login():
     """Endpoint to handle user login"""
+    from api.v1.app import auth
     email = request.form.get('email')
     password = request.form.get('password')
 
