@@ -24,8 +24,11 @@ else:
     from api.v1.auth.auth import Auth
     auth = Auth()
 
+
 @app.before_request
 def before_request():
+    """ Auth type option
+    """
     if auth is None:
         return
     excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
@@ -45,6 +48,7 @@ def not_found(error) -> str:
     """
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Not found handler
@@ -52,9 +56,10 @@ def unauthorized(error) -> str:
     return jsonify({"error": "unauthorized"}), 401
 
 
-
 @app.errorhandler(403)
 def forbidden_error(error):
+    """ forbiden handler
+    """
     response = jsonify({"error": "Forbidden"})
     response.status_code = 403
     return response
