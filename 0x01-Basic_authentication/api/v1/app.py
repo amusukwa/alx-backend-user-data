@@ -2,14 +2,11 @@
 """
 Route module for the API
 """
-from os import getenv
-from api.v1.views import app_views
-from api.v1.auth.auth import Auth
 from api.v1.auth.basic_auth import BasicAuth
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
+from typing import Literal
 import os
-
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -38,7 +35,6 @@ def before_request():
     if auth.current_user(request) is None:
         abort(403)
 
-
 @app.errorhandler(404)
 def not_found(error) -> str:
     """ Not found handler
@@ -46,10 +42,11 @@ def not_found(error) -> str:
     return jsonify({"error": "Not found"}), 404
 
 @app.errorhandler(401)
-def unauthorized_error(error):
-    response = jsonify({"error": "Unauthorized"})
-    response.status_code = 401
-    return response
+def unauthorized(error) -> tuple[str, Literal[401]]:
+    """ Unauthorized handler
+    """
+    return jsonify({"error": "Unauthorized"}), 401
+
 
 @app.errorhandler(403)
 def forbidden_error(error):
