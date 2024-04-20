@@ -6,6 +6,7 @@ from flask import Request
 
 
 class Auth:
+    """ Class Auth for authorization"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """ function for getting authorization"""
         if path is None or excluded_paths is None or len(excluded_paths) == 0:
@@ -27,6 +28,7 @@ class Auth:
 
 
     def current_user(self, request=None) -> TypeVar('User'):
+        """ function fir current user"""
         return None
 
     def session_cookie(self, request: Request = None) -> str:
