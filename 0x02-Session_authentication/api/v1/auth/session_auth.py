@@ -1,10 +1,12 @@
-# api/v1/auth/session_auth.py
-
+#!/usr/bin/env python3
+""" Module for class sessionAuth """
 from api.v1.auth.auth import Auth
 from models.user import User
 import uuid
 
+
 class SessionAuth(Auth):
+    """ class for  sessionAuth """
     user_id_by_session_id = {}
 
     def create_session(self, user_id: str = None) -> str:
