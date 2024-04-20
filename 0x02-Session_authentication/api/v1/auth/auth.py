@@ -28,7 +28,7 @@ class Auth:
 
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """ function fir current user"""
+        """ function for current user"""
         return None
 
     def session_cookie(self, request: Request = None) -> str:
