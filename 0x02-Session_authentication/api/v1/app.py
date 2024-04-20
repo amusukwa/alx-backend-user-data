@@ -30,11 +30,14 @@ elif auth_type == 'Auth':
 else:
     raise ValueError(f"Invalid value for AUTH_TYPE: {auth_type}")
 
+
 @app.before_request
 def before_request():
+    """ before req handler
+    """
     if auth is None:
         return
-    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/','/api/v1/auth_session/login/']
+    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/', '/api/v1/auth_session/login/']
     if request.path in excluded_paths:
         return
     if not auth.require_auth(request.path, excluded_paths):
@@ -43,7 +46,7 @@ def before_request():
         abort(401)
     if auth.current_user(request) is None:
         abort(403)        
-    request.current_user = auth.current_user(request) 
+    request.current_user = auth.current_user(request)
     if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
         abort(401)
 
@@ -54,14 +57,20 @@ def not_found(error) -> str:
     """
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
 def unauthorized_error(error):
+    """ Not authorization handler
+    """
     response = jsonify({"error": "Unauthorized"})
     response.status_code = 401
     return response
 
+
 @app.errorhandler(403)
 def forbidden_error(error):
+    """forbidden handler
+    """
     response = jsonify({"error": "Forbidden"})
     response.status_code = 403
     return response
