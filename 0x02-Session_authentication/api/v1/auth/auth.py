@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
-""" class module for Authorization"""
-from flask import request
+"""Class module for Authorization"""
+
 from typing import List, TypeVar
 from flask import Request
 
 
 class Auth:
-    """ Class Auth for authorization"""
-    
+    """Class Auth for authorization"""
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """ function for getting authorization"""
+        """
+        Function for checking if authentication is required for a given path.
+
+        Args:
+            path (str): The path to check for authentication requirement.
+            excluded_paths (List[str]): List of paths that are excluded
+
+        Returns:
+            bool: True if authentication is required, False if not.
+        """
         if path is None or excluded_paths is None or len(excluded_paths) == 0:
             return True
 
@@ -21,23 +30,40 @@ class Auth:
 
         return True
 
-    def authorization_header(self, request=None) -> str:
-        """ function for getting auth header"""
-        
+    def authorization_header(self, request: Request = None) -> str:
+        """
+        Function for getting the authorization header from a request.
+
+        Args:
+            request (Request, optional): The Flask request object.
+
+        Returns:
+            str: The authorization header if present, else None.
+        """
         if request is None or 'Authorization' not in request.headers:
             return None
         return request.headers.get('Authorization')
 
+    def current_user(self, request: Request = None) -> TypeVar('User'):
+        """
+        Function for getting the current user.
 
-    def current_user(self, request=None) -> TypeVar('User'):
-        """ function for current user"""
-        
+        Args:
+            request (Request, optional): The Flask request object.
+
+        Returns:
+            User: The current user object.
+        """
         return None
 
     def session_cookie(self, request: Request = None) -> str:
-        """ returns session cookie"""
-        
-        if request is None:
-            return None
-        session_name = os.environ.get('SESSION_NAME', '_my_session_id')
-        return request.cookies.get(session_name)
+        """
+        Function for getting the session cookie from a request.
+
+        Args:
+            request (Request, optional): The Flask request object.
+
+        Returns:
+            str: The session cookie if present, else None.
+        """
+        return None
