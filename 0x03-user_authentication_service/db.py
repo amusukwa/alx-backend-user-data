@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
 """DB module
 """
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from user import Base, User
-
 
 class DB:
     """DB class
@@ -39,3 +39,18 @@ class DB:
         # Commit the session to save the changes to the database
         self._session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """Find a user in the database based on provided keyword arguments
+        """
+        try:
+            # Query the users table based on the provided keyword arguments
+            user = self._session.query(User).filter_by(**kwargs).first()
+            if user is None:
+                # If no user is found, raise NoResultFound exception
+                raise NoResultFound
+            return user
+        except InvalidRequestError:
+            # If invalid query arguments are passed, raise InvalidRequestError
+            raise InvalidRequestError("Invalid query arguments") 
+
