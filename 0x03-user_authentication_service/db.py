@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
 """DB module
 """
 
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import InvalidRequestError
@@ -32,11 +33,8 @@ class DB:
     def add_user(self, email: str, hashed_password: str) -> User:
         """Add a new user to the database
         """
-        # Create a new User object
         new_user = User(email=email, hashed_password=hashed_password)
-        # Add the new user to the session
         self._session.add(new_user)
-        # Commit the session to save the changes to the database
         self._session.commit()
         return new_user
 
@@ -44,13 +42,20 @@ class DB:
         """Find a user in the database based on provided keyword arguments
         """
         try:
-            # Query the users table based on the provided keyword arguments
-            user = self._session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                # If no user is found, raise NoResultFound exception
-                raise NoResultFound
+            user = self._session.query(User).filter_by(**kwargs).one()
             return user
+        except NoResultFound:
+            raise NoResultFound("No user found with the specified criteria")
         except InvalidRequestError:
-            # If invalid query arguments are passed, raise InvalidRequestError
-            raise InvalidRequestError("Invalid query arguments") 
+            raise InvalidRequestError("Invalid query arguments")
 
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Update a user's attributes in the database
+        """
+        user = self.find_user_by(id=user_id)
+        for key, value in kwargs.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+            else:
+                raise ValueError(f"Invalid attribute: {key}")
+        self._session.commit()
