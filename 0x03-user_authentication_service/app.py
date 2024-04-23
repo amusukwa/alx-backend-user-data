@@ -60,6 +60,18 @@ def logout():
     else:
         return jsonify({"error": "User not found"}), 403
 
+@app.route("/profile")
+def profile():
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        return jsonify({"error": "Session ID not provided"}), 403
+
+    user = auth.get_user_from_session_id(session_id)
+    if user:
+        return jsonify({"email": user.email}), 200
+    else:
+        return jsonify({"error": "User not found"}), 403
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
