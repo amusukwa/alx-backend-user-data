@@ -3,10 +3,10 @@
 """
 
 import bcrypt
+import uuid
+from sqlalchemy.orm.exc import NoResultFound
 from db import DB
 from user import User
-from sqlalchemy.orm.exc import NoResultFound
-import uuid
 
 
 class Auth:
@@ -53,3 +53,19 @@ class Auth:
             return session_id
         except NoResultFound:
             return None
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        """Returns the user corresponding to the given session ID, or None if not found."""
+        if not session_id:
+            return None
+
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except NoResultFound:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """Updates the session ID of the user with the given user_id to None."""
+        self._db.update_user(user_id, session_id=None)
+        
