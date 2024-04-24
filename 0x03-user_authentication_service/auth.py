@@ -55,7 +55,7 @@ class Auth:
             return None
 
     def get_user_from_session_id(self, session_id: str) -> User:
-        """Returns the user corresponding to the given session ID, or None if not found."""
+        """Returns the user corresponding to given session ID, or None"""
         if not session_id:
             return None
 
@@ -66,11 +66,11 @@ class Auth:
             return None
 
     def destroy_session(self, user_id: int) -> None:
-        """Updates the session ID of the user with the given user_id to None."""
+        """Updates the session ID of the user with the given user_id."""
         self._db.update_user(user_id, session_id=None)
 
     def get_reset_password_token(self, email: str) -> str:
-        """Generates a reset password token for the user with the given email."""
+        """Generates a reset password token for user with given email."""
         try:
             user = self._db.find_user_by(email=email)
         except NoResultFound:
@@ -85,6 +85,7 @@ class Auth:
         try:
             user = self._db.find_user_by(reset_token=reset_token)
             hashed_password = self._hash_password(password)
-            self._db.update_user(user.id, hashed_password=hashed_password, reset_token=None)
+            update = self._db.update_user()
+            update(user.id, hashed_password=hashed_password, reset_token=None)
         except NoResultFound:
             raise ValueError("Invalid reset token")
