@@ -83,9 +83,9 @@ class Auth:
     def update_password(self, reset_token: str, password: str) -> None:
         """Updates the password for the user with the given reset token."""
         try:
-            User = self._db.find_user_by(reset_token=reset_token)
+            user = self._db.find_user_by(reset_token=reset_token)
             hashed_password = self._hash_password(password)
             update = self._db.update_user()
-            update(User.id, hashed_password=hashed_password, reset_token=None)
+            update(user.id, hashed_password=hashed_password, reset_token=None)
         except NoResultFound:
             raise ValueError("Invalid reset token")
