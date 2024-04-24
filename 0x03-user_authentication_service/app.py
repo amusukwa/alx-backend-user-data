@@ -7,10 +7,12 @@ from auth import Auth
 app = Flask(__name__)
 auth = Auth()
 
+
 @app.route("/")
 def welcome() -> str:
     """Welcome route returning a JSON payload"""
     return jsonify({"message": "Bienvenue"})
+
 
 @app.route("/register", methods=["POST"])
 def register() -> str:
@@ -18,15 +20,16 @@ def register() -> str:
     try:
         email = request.form.get("email")
         password = request.form.get("password")
-        
+
         # Attempt to register the user
         user = auth.register_user(email, password)
-        
+
         # User successfully registered
         return jsonify({"email": user.email, "message": "user created"}), 200
     except ValueError as err:
         # User already registered
         return jsonify({"message": "email already registered"}), 400
+
 
 @app.route("/sessions", methods=["POST"])
 def login():
@@ -43,10 +46,12 @@ def login():
     if not session_id:
         abort(500)
 
-    response = make_response(jsonify({"email": email, "message": "logged in"}), 200)
+    response = make_response(
+        jsonify({"email": email, "message": "logged in"}), 200)
     response.set_cookie("session_id", session_id)
     return response
-    
+
+
 @app.route("/sessions", methods=["DELETE"])
 def logout():
     session_id = request.cookies.get("session_id")
@@ -59,6 +64,7 @@ def logout():
         return redirect("/")
     else:
         return jsonify({"error": "User not found"}), 403
+
 
 @app.route("/profile")
 def profile():
@@ -73,5 +79,15 @@ def profile():
         return jsonify({"error": "User not found"}), 403
 
 
+@app.route("/reset_password", methods=["POST"])
+def reset_password():
+    email = request.form.get("email")
+    try:
+        reset_token = auth.get_reset_password_token(email)
+        return jsonify({"email": email, "reset_token": reset_token}), 200
+    except ValueError as e:
+        return str(e), 403
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=500)
