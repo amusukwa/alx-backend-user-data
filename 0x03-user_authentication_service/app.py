@@ -66,7 +66,7 @@ def logout():
         return jsonify({"error": "User not found"}), 403
 
 
-@app.route("/profile",strict_slashes=False)
+@app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile():
     session_id = request.cookies.get("session_id")
     if not session_id:
@@ -79,7 +79,7 @@ def profile():
         return jsonify({"error": "User not found"}), 403
 
 
-@app.route("/reset_password", methods=["POST"])
+@app.route("/reset_password", methods=["POST"],strict_slashes=False)
 def reset_password():
     email = request.form.get("email")
     try:
