@@ -13,6 +13,7 @@ class Auth:
     """Auth class to interact with the authentication database."""
 
     def __init__(self):
+        """Constructor function"""
         self._db = DB()
 
     def _hash_password(self, password: str) -> bytes:
