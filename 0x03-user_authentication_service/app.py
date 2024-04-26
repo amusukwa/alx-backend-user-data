@@ -31,7 +31,7 @@ def register() -> str:
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route("/sessions", methods=["POST"],strict_slashes=False)
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login():
     email = request.form.get("email")
     password = request.form.get("password")
@@ -52,7 +52,7 @@ def login():
     return response
 
 
-@app.route("/sessions", methods=["DELETE"],strict_slashes=False)
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout():
     session_id = request.cookies.get("session_id")
     if not session_id:
@@ -79,7 +79,7 @@ def profile():
         return jsonify({"error": "User not found"}), 403
 
 
-@app.route("/reset_password", methods=["POST"],strict_slashes=False)
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
 def reset_password():
     email = request.form.get("email")
     try:
